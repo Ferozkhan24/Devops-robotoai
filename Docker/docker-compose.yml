@@ -1,0 +1,24 @@
+services:
+  demo:
+    build: .
+    image: ros-humble-turtlesim
+    container_name: demo
+    network_mode: host
+
+    init: true
+    stop_signal: SIGTERM
+    stop_grace_period: 30s
+
+    environment:
+      - DISPLAY=${DISPLAY}
+      - XAUTHORITY=/tmp/.docker.xauth
+      - QT_X11_NO_MITSHM=1
+
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ${XAUTHORITY}:/tmp/.docker.xauth
+      - ./scripts/entry.sh:/entry.sh
+      - ./scripts/exit.sh:/exit.sh
+
+    command: >
+      bash -c " chmod +x /entry.sh /exit.sh && exec /entry.sh "
